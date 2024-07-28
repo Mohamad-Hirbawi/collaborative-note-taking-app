@@ -1,0 +1,43 @@
+/* src/styles/EditNote.css */
+
+.edit-note-form {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-note-form h2 {
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.edit-note-form .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-note-form .form-control {
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.edit-note-form .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.edit-note-form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.edit-note-form .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}

@@ -5,6 +5,8 @@ import * as Yup from 'yup';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Login.css';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -31,37 +33,37 @@ const Login = () => {
     });
 
     return (
-        <form onSubmit={formik.handleSubmit}>
-            <h2>Login</h2>
-            <label>
-                Email:
+        <form onSubmit={formik.handleSubmit} className="container mt-5 login-form">
+            <h2 className="mb-4">Login</h2>
+            <div className="form-group mb-3">
+                <label>Email:</label>
                 <input
                     type="email"
                     name="email"
+                    className="form-control"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.email}
                 />
                 {formik.touched.email && formik.errors.email ? (
-                    <div>{formik.errors.email}</div>
+                    <div className="error">{formik.errors.email}</div>
                 ) : null}
-            </label>
-            <br />
-            <label>
-                Password:
+            </div>
+            <div className="form-group mb-3">
+                <label>Password:</label>
                 <input
                     type="password"
                     name="password"
+                    className="form-control"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.password}
                 />
                 {formik.touched.password && formik.errors.password ? (
-                    <div>{formik.errors.password}</div>
+                    <div className="error">{formik.errors.password}</div>
                 ) : null}
-            </label>
-            <br />
-            <button type="submit">Login</button>
+            </div>
+            <button type="submit" className="btn btn-primary">Login</button>
         </form>
     );
 };

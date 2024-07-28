@@ -1,0 +1,20 @@
+/* src/styles/SearchBar.css */
+
+.search-bar {
+    max-width: 400px;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.search-bar:focus {
+    background-color: #fff;
+    transform: scale(1.02);
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}

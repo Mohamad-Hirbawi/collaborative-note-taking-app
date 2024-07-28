@@ -4,6 +4,8 @@ import { firestore } from '../firebase';
 import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/EditNote.css';
 
 const EditNote = () => {
     const { id } = useParams();
@@ -56,19 +58,27 @@ const EditNote = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Edit Note</h2>
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} required />
-            <br />
-            <input
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Category"
-                required
-            />
-            <br />
-            <button type="submit">Update Note</button>
+        <form onSubmit={handleSubmit} className="container mt-5 edit-note-form">
+            <h2 className="mb-4">Edit Note</h2>
+            <div className="form-group mb-3">
+        <textarea
+            className="form-control"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            required
+        />
+            </div>
+            <div className="form-group mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    placeholder="Category"
+                    required
+                />
+            </div>
+            <button type="submit" className="btn btn-primary">Update Note</button>
         </form>
     );
 };

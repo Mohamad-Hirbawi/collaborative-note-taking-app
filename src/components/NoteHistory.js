@@ -6,6 +6,7 @@ import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReactMarkdown from 'react-markdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/NoteHistory.css';
 
 const NoteHistory = () => {
     const { id } = useParams();
@@ -30,7 +31,7 @@ const NoteHistory = () => {
     }, [id]);
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5 note-history-container">
             <h2 className="mb-4">Note History</h2>
             <ul className="list-group">
                 {history.map((version) => (

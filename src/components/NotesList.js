@@ -1,85 +1,71 @@
-// src/components/EditNote.js
-import React, { useState, useEffect } from 'react';
+// src/components/NotesList.js
+import React, { useEffect, useState } from 'react';
 import { firestore } from '../firebase';
-import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
-import { useNavigate, useParams } from 'react-router-dom';
+import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ReactMarkdown from 'react-markdown';
+import SearchBar from './SearchBar';
+import CategoryList from './CategoryList';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const EditNote = () => {
-    const { id } = useParams();
-    const [note, setNote] = useState('');
-    const [category, setCategory] = useState('');
-    const navigate = useNavigate();
+const NotesList = () => {
+    const [notes, setNotes] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        const fetchNote = async () => {
-            try {
-                const docRef = doc(firestore, 'notes', id);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    setNote(docSnap.data().text);
-                    setCategory(docSnap.data().category);
-                } else {
-                    toast.error('Note not found');
-                    navigate('/notes');
-                }
-            } catch (error) {
-                toast.error('Error fetching note: ' + error.message);
-            }
-        };
+        const q = query(collection(firestore, 'notes'), orderBy('createdAt', 'desc'));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const notesData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setNotes(notesData);
 
-        fetchNote();
-    }, [id, navigate]);
+            // Extract unique categories
+            const uniqueCategories = [...new Set(notesData.map(note => note.category))];
+            setCategories(uniqueCategories);
+        });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        return () => unsubscribe();
+    }, []);
+
+    const handleDelete = async (id) => {
         try {
-            const docRef = doc(firestore, 'notes', id);
-            const noteSnapshot = await getDoc(docRef);
-
-            // Save the current version to history collection
-            if (noteSnapshot.exists()) {
-                const noteData = noteSnapshot.data();
-                await addDoc(collection(firestore, 'notes', id, 'history'), {
-                    ...noteData,
-                    savedAt: new Date()
-                });
-            }
-
-            // Update the note
-            await updateDoc(docRef, { text: note, category: category });
-            toast.success('Note updated successfully');
-            navigate('/notes');
+            await deleteDoc(doc(firestore, 'notes', id));
+            toast.success('Note deleted successfully');
         } catch (error) {
-            toast.error('Error updating note: ' + error.message);
+            toast.error('Error deleting note: ' + error.message);
         }
     };
 
+    const filteredNotes = notes.filter(note =>
+        note.text.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (filterCategory ? note.category.toLowerCase() === filterCategory.toLowerCase() : true)
+    );
+
     return (
-        <form onSubmit={handleSubmit} className="container mt-5">
-            <h2 className="mb-4">Edit Note</h2>
-            <div className="form-group mb-3">
-        <textarea
-            className="form-control"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            required
-        />
-            </div>
-            <div className="form-group mb-3">
-                <input
-                    type="text"
-                    className="form-control"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    placeholder="Category"
-                    required
-                />
-            </div>
-            <button type="submit" className="btn btn-primary">Update Note</button>
-        </form>
+        <div className="container mt-5">
+            <h2 className="mb-4">Notes</h2>
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <CategoryList categories={categories} setFilterCategory={setFilterCategory} />
+            <ul className="list-group">
+                {filteredNotes.map(note => (
+                    <li key={note.id} className="list-group-item mb-3">
+                        <ReactMarkdown>{note.text}</ReactMarkdown>
+                        <p><strong>Category:</strong> {note.category}</p>
+                        <div className="d-flex justify-content-between">
+                            <Link to={`/edit-note/${note.id}`} className="btn btn-secondary">Edit</Link>
+                            <Link to={`/note-history/${note.id}`} className="btn btn-info">History</Link>
+                            <button onClick={() => handleDelete(note.id)} className="btn btn-danger">Delete</button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
 };
 
-export default EditNote;
+export default NotesList;

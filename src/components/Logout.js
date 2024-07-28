@@ -3,6 +3,8 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Logout.css';
 
 const Logout = () => {
     const { currentUser } = useAuth();
@@ -18,7 +20,7 @@ const Logout = () => {
 
     return (
         currentUser && (
-            <button onClick={handleLogout}>Logout</button>
+            <button className="logout-button" onClick={handleLogout}>Logout</button>
         )
     );
 };
