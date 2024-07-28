@@ -6,11 +6,13 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReactMarkdown from 'react-markdown';
 import SearchBar from './SearchBar';
+import CategoryList from './CategoryList';
 
 const NotesList = () => {
     const [notes, setNotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState('');
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         const q = query(collection(firestore, 'notes'), orderBy('createdAt', 'desc'));
@@ -20,6 +22,10 @@ const NotesList = () => {
                 ...doc.data()
             }));
             setNotes(notesData);
+
+            // Extract unique categories
+            const uniqueCategories = [...new Set(notesData.map(note => note.category))];
+            setCategories(uniqueCategories);
         });
 
         return () => unsubscribe();
@@ -43,12 +49,7 @@ const NotesList = () => {
         <div>
             <h2>Notes</h2>
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-            <input
-                type="text"
-                placeholder="Filter by category..."
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-            />
+            <CategoryList categories={categories} setFilterCategory={setFilterCategory} />
             <ul>
                 {filteredNotes.map(note => (
                     <li key={note.id}>
