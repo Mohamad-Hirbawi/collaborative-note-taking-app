@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { toast } from 'react-toastify';
 
 const AddNote = () => {
     const [note, setNote] = useState('');
@@ -14,9 +15,10 @@ const AddNote = () => {
                     text: note,
                     createdAt: serverTimestamp()
                 });
+                toast.success('Note added successfully');
                 setNote('');
             } catch (error) {
-                console.error('Error adding note:', error);
+                toast.error('Error adding note: ' + error.message);
             }
         }
     };

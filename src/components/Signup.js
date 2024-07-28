@@ -1,20 +1,24 @@
 // src/components/Signup.js
 import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                console.log('User registered:', userCredential);
+                toast.success('User registered successfully');
+                navigate('/notes');
             })
             .catch((error) => {
-                console.error('Error signing up:', error);
+                toast.error('Error signing up: ' + error.message);
             });
     };
 

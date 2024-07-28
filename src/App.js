@@ -1,6 +1,8 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import AddNote from './components/AddNote';
@@ -39,6 +41,7 @@ function App() {
                         <Route path="/add-note" element={<PrivateRoute><AddNote /></PrivateRoute>} />
                         <Route path="/notes" element={<PrivateRoute><NotesList /></PrivateRoute>} />
                     </Routes>
+                    <ToastContainer />
                 </div>
             </AuthProvider>
         </Router>
