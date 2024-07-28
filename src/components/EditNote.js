@@ -1,7 +1,7 @@
 // src/components/EditNote.js
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -35,6 +35,18 @@ const EditNote = () => {
         e.preventDefault();
         try {
             const docRef = doc(firestore, 'notes', id);
+            const noteSnapshot = await getDoc(docRef);
+
+            // Save the current version to history collection
+            if (noteSnapshot.exists()) {
+                const noteData = noteSnapshot.data();
+                await addDoc(collection(firestore, 'notes', id, 'history'), {
+                    ...noteData,
+                    savedAt: new Date()
+                });
+            }
+
+            // Update the note
             await updateDoc(docRef, { text: note, category: category });
             toast.success('Note updated successfully');
             navigate('/notes');

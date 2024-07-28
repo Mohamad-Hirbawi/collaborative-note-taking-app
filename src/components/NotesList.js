@@ -56,6 +56,7 @@ const NotesList = () => {
                         <ReactMarkdown>{note.text}</ReactMarkdown>
                         <p><strong>Category:</strong> {note.category}</p>
                         <Link to={`/edit-note/${note.id}`}>Edit</Link>
+                        <Link to={`/note-history/${note.id}`}>History</Link>
                         <button onClick={() => handleDelete(note.id)}>Delete</button>
                     </li>
                 ))}
