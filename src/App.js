@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import AddNote from './components/AddNote';
@@ -26,12 +26,12 @@ function App() {
                         </li>
                     </ul>
                 </nav>
-                <Switch>
-                    <Route path="/login" component={Login} />
-                    <Route path="/signup" component={Signup} />
-                    <Route path="/add-note" component={AddNote} />
-                    <Route path="/notes" component={NotesList} />
-                </Switch>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/add-note" element={<AddNote />} />
+                    <Route path="/notes" element={<NotesList />} />
+                </Routes>
             </div>
         </Router>
     );
