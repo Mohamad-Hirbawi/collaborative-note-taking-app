@@ -4,9 +4,12 @@ import { firestore } from '../firebase';
 import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ReactMarkdown from 'react-markdown';
+import SearchBar from './SearchBar';
 
 const NotesList = () => {
     const [notes, setNotes] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const q = query(collection(firestore, 'notes'), orderBy('createdAt', 'desc'));
@@ -30,13 +33,18 @@ const NotesList = () => {
         }
     };
 
+    const filteredNotes = notes.filter(note =>
+        note.text.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div>
             <h2>Notes</h2>
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             <ul>
-                {notes.map(note => (
+                {filteredNotes.map(note => (
                     <li key={note.id}>
-                        {note.text}
+                        <ReactMarkdown>{note.text}</ReactMarkdown>
                         <Link to={`/edit-note/${note.id}`}>Edit</Link>
                         <button onClick={() => handleDelete(note.id)}>Delete</button>
                     </li>
