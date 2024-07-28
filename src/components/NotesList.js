@@ -10,6 +10,7 @@ import SearchBar from './SearchBar';
 const NotesList = () => {
     const [notes, setNotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
 
     useEffect(() => {
         const q = query(collection(firestore, 'notes'), orderBy('createdAt', 'desc'));
@@ -34,17 +35,25 @@ const NotesList = () => {
     };
 
     const filteredNotes = notes.filter(note =>
-        note.text.toLowerCase().includes(searchQuery.toLowerCase())
+        note.text.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (filterCategory ? note.category.toLowerCase() === filterCategory.toLowerCase() : true)
     );
 
     return (
         <div>
             <h2>Notes</h2>
             <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <input
+                type="text"
+                placeholder="Filter by category..."
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+            />
             <ul>
                 {filteredNotes.map(note => (
                     <li key={note.id}>
                         <ReactMarkdown>{note.text}</ReactMarkdown>
+                        <p><strong>Category:</strong> {note.category}</p>
                         <Link to={`/edit-note/${note.id}`}>Edit</Link>
                         <button onClick={() => handleDelete(note.id)}>Delete</button>
                     </li>

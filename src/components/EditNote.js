@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 const EditNote = () => {
     const { id } = useParams();
     const [note, setNote] = useState('');
+    const [category, setCategory] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,6 +18,7 @@ const EditNote = () => {
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     setNote(docSnap.data().text);
+                    setCategory(docSnap.data().category);
                 } else {
                     toast.error('Note not found');
                     navigate('/notes');
@@ -33,7 +35,7 @@ const EditNote = () => {
         e.preventDefault();
         try {
             const docRef = doc(firestore, 'notes', id);
-            await updateDoc(docRef, { text: note });
+            await updateDoc(docRef, { text: note, category: category });
             toast.success('Note updated successfully');
             navigate('/notes');
         } catch (error) {
@@ -45,6 +47,14 @@ const EditNote = () => {
         <form onSubmit={handleSubmit}>
             <h2>Edit Note</h2>
             <textarea value={note} onChange={(e) => setNote(e.target.value)} required />
+            <br />
+            <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Category"
+                required
+            />
             <br />
             <button type="submit">Update Note</button>
         </form>
