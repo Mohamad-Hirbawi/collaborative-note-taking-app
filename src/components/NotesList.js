@@ -1,7 +1,9 @@
 // src/components/NotesList.js
 import React, { useEffect, useState } from 'react';
 import { firestore } from '../firebase';
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const NotesList = () => {
     const [notes, setNotes] = useState([]);
@@ -19,12 +21,25 @@ const NotesList = () => {
         return () => unsubscribe();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            await deleteDoc(doc(firestore, 'notes', id));
+            toast.success('Note deleted successfully');
+        } catch (error) {
+            toast.error('Error deleting note: ' + error.message);
+        }
+    };
+
     return (
         <div>
             <h2>Notes</h2>
             <ul>
                 {notes.map(note => (
-                    <li key={note.id}>{note.text}</li>
+                    <li key={note.id}>
+                        {note.text}
+                        <Link to={`/edit-note/${note.id}`}>Edit</Link>
+                        <button onClick={() => handleDelete(note.id)}>Delete</button>
+                    </li>
                 ))}
             </ul>
         </div>

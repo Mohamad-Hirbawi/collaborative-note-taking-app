@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import AddNote from './components/AddNote';
 import NotesList from './components/NotesList';
+import EditNote from './components/EditNote';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import Logout from './components/Logout';
@@ -40,6 +41,7 @@ function App() {
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/add-note" element={<PrivateRoute><AddNote /></PrivateRoute>} />
                         <Route path="/notes" element={<PrivateRoute><NotesList /></PrivateRoute>} />
+                        <Route path="/edit-note/:id" element={<PrivateRoute><EditNote /></PrivateRoute>} />
                     </Routes>
                     <ToastContainer />
                 </div>
