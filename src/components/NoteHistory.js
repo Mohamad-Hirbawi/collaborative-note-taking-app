@@ -5,6 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ReactMarkdown from 'react-markdown';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const NoteHistory = () => {
     const { id } = useParams();
@@ -29,15 +30,15 @@ const NoteHistory = () => {
     }, [id]);
 
     return (
-        <div>
-            <h2>Note History</h2>
-            <ul>
-                {history.map((version, index) => (
-                    <li key={version.id}>
+        <div className="container mt-5">
+            <h2 className="mb-4">Note History</h2>
+            <ul className="list-group">
+                {history.map((version) => (
+                    <li key={version.id} className="list-group-item mb-3">
                         <ReactMarkdown>{version.text}</ReactMarkdown>
                         <p><strong>Category:</strong> {version.category}</p>
                         <p><strong>Saved At:</strong> {new Date(version.savedAt.seconds * 1000).toLocaleString()}</p>
-                        <Link to={`/edit-note/${id}`}>Restore</Link>
+                        <Link to={`/edit-note/${id}`} className="btn btn-secondary">Restore</Link>
                     </li>
                 ))}
             </ul>
