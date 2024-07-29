@@ -38,7 +38,9 @@ const NoteHistory = () => {
                     <li key={version.id} className="list-group-item mb-3">
                         <ReactMarkdown>{version.text}</ReactMarkdown>
                         <p><strong>Category:</strong> {version.category}</p>
-                        <p><strong>Saved At:</strong> {new Date(version.savedAt.seconds * 1000).toLocaleString()}</p>
+                        <p><strong>Saved At:</strong>
+                            {version.savedAt && version.savedAt.seconds ? new Date(version.savedAt.seconds * 1000).toLocaleString() : 'Unknown'}
+                        </p>
                         <Link to={`/edit-note/${id}`} className="btn btn-secondary">Restore</Link>
                     </li>
                 ))}

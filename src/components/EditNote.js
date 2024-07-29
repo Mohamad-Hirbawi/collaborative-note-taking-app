@@ -1,7 +1,7 @@
 // src/components/EditNote.js
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
-import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -44,12 +44,12 @@ const EditNote = () => {
                 const noteData = noteSnapshot.data();
                 await addDoc(collection(firestore, 'notes', id, 'history'), {
                     ...noteData,
-                    savedAt: new Date()
+                    savedAt: serverTimestamp()
                 });
             }
 
             // Update the note
-            await updateDoc(docRef, { text: note, category: category });
+            await updateDoc(docRef, { text: note, category: category, savedAt: serverTimestamp() });
             toast.success('Note updated successfully');
             navigate('/notes');
         } catch (error) {

@@ -14,11 +14,22 @@ const AddNote = () => {
         e.preventDefault();
         if (note.trim() && category.trim()) {
             try {
-                await addDoc(collection(firestore, 'notes'), {
+                // Add note to 'notes' collection
+                const docRef = await addDoc(collection(firestore, 'notes'), {
                     text: note,
                     category: category,
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    savedAt: serverTimestamp()  // Add savedAt timestamp
                 });
+
+                // Add note to 'history' sub-collection
+                await addDoc(collection(firestore, 'notes', docRef.id, 'history'), {
+                    text: note,
+                    category: category,
+                    createdAt: serverTimestamp(),
+                    savedAt: serverTimestamp()  // Add savedAt timestamp
+                });
+
                 toast.success('Note added successfully');
                 setNote('');
                 setCategory('');
