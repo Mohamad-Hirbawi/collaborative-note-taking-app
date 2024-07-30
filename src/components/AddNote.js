@@ -1,7 +1,7 @@
 // src/components/AddNote.js
 import React, { useState } from 'react';
 import { firestore } from '../firebase';
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/AddNote.css';
@@ -14,20 +14,22 @@ const AddNote = () => {
         e.preventDefault();
         if (note.trim() && category.trim()) {
             try {
+                const timestamp = serverTimestamp();
+
                 // Add note to 'notes' collection
                 const docRef = await addDoc(collection(firestore, 'notes'), {
                     text: note,
                     category: category,
-                    createdAt: serverTimestamp(),
-                    savedAt: serverTimestamp()  // Add savedAt timestamp
+                    createdAt: timestamp,
+                    savedAt: timestamp  // Add savedAt timestamp
                 });
 
-                // Add note to 'history' sub-collection
+                // Add initial note to 'history' sub-collection
                 await addDoc(collection(firestore, 'notes', docRef.id, 'history'), {
                     text: note,
                     category: category,
-                    createdAt: serverTimestamp(),
-                    savedAt: serverTimestamp()  // Add savedAt timestamp
+                    isInitial: true,
+                    savedAt: timestamp  // Add savedAt timestamp
                 });
 
                 toast.success('Note added successfully');
@@ -43,13 +45,13 @@ const AddNote = () => {
         <form onSubmit={handleSubmit} className="container mt-5 add-note-form">
             <h2 className="mb-4">Add Note</h2>
             <div className="form-group mb-3">
-        <textarea
-            className="form-control"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Write your note here..."
-            required
-        />
+                <textarea
+                    className="form-control"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Write your note here..."
+                    required
+                />
             </div>
             <div className="form-group mb-3">
                 <input

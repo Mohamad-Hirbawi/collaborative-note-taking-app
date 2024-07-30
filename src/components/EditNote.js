@@ -38,18 +38,22 @@ const EditNote = () => {
         try {
             const docRef = doc(firestore, 'notes', id);
             const noteSnapshot = await getDoc(docRef);
+            const timestamp = serverTimestamp();
 
             // Save the current version to history collection
             if (noteSnapshot.exists()) {
                 const noteData = noteSnapshot.data();
                 await addDoc(collection(firestore, 'notes', id, 'history'), {
-                    ...noteData,
-                    savedAt: serverTimestamp()
+                    oldText: noteData.text,
+                    newText: note,
+                    oldCategory: noteData.category,
+                    newCategory: category,
+                    savedAt: timestamp  // Correctly setting savedAt
                 });
             }
 
             // Update the note
-            await updateDoc(docRef, { text: note, category: category, savedAt: serverTimestamp() });
+            await updateDoc(docRef, { text: note, category: category, savedAt: timestamp });
             toast.success('Note updated successfully');
             navigate('/notes');
         } catch (error) {
@@ -61,12 +65,12 @@ const EditNote = () => {
         <form onSubmit={handleSubmit} className="container mt-5 edit-note-form">
             <h2 className="mb-4">Edit Note</h2>
             <div className="form-group mb-3">
-        <textarea
-            className="form-control"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            required
-        />
+                <textarea
+                    className="form-control"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    required
+                />
             </div>
             <div className="form-group mb-3">
                 <input

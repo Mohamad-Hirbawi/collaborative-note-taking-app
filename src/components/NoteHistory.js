@@ -4,7 +4,6 @@ import { firestore } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import ReactMarkdown from 'react-markdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/NoteHistory.css';
 
@@ -36,9 +35,20 @@ const NoteHistory = () => {
             <ul className="list-group">
                 {history.map((version) => (
                     <li key={version.id} className="list-group-item mb-3">
-                        <ReactMarkdown>{version.text}</ReactMarkdown>
-                        <p><strong>Category:</strong> {version.category}</p>
-                        <p><strong>Saved At:</strong>
+                        {version.isInitial ? (
+                            <>
+                                <p><strong>Initial Text:</strong> {version.text}</p>
+                                <p><strong>Initial Category:</strong> {version.category}</p>
+                            </>
+                        ) : (
+                            <>
+                                <p><strong>Old Text:</strong> {version.oldText}</p>
+                                <p><strong>New Text:</strong> {version.newText}</p>
+                                <p><strong>Old Category:</strong> {version.oldCategory}</p>
+                                <p><strong>New Category:</strong> {version.newCategory}</p>
+                            </>
+                        )}
+                        <p><strong>Modified At:</strong>
                             {version.savedAt && version.savedAt.seconds ? new Date(version.savedAt.seconds * 1000).toLocaleString() : 'Unknown'}
                         </p>
                         <Link to={`/edit-note/${id}`} className="btn btn-secondary">Restore</Link>
